@@ -1,0 +1,79 @@
+create database managerProducts;
+use managerProducts;
+
+drop table if exists `product`;
+create table product(
+	id int primary key not null auto_increment,
+	nameProduct varchar(50),
+    price bigint,
+    quantity int,
+    color varchar(50),
+    description nvarchar(250),
+    categoryId int
+);
+
+drop table if exists `category`;
+create table category(
+	id int primary key not null,
+    nameCategory varchar(50)
+);
+
+insert into product(nameProduct, price,
+quantity, color, categoryId) values
+('iphone 11',200000,20,'Green',1),
+('iphone 12',200000,20,'Black',1),
+('iphone 10',200000,20,'Yellow',1),
+('iphone 11',200000,20,'Red',1),
+('SamSung A11',200000,20,'Green',1),
+('Sony A20',200000,20,'Green',2);
+select * from product;
+
+insert into category values
+(1,'Phone'),
+(2,'TV');
+
+select * from category;
+
+delimiter &&
+drop procedure if exists `findAllProduct` &&
+create procedure findAllProduct()
+begin
+	select p.id, p.nameProduct, p.price,
+    p.quantity,
+    p.color,
+    c.nameCategory
+    from Product as p
+    join category as c
+    on p.categoryId = c.id;
+    end &&
+delimiter ;
+
+call findAllProduct();
+
+#delete product
+delimiter &&
+drop procedure if exists `deleteProductById` &&
+create procedure deleteProductById(in _id int)
+begin
+	delete from Product where Product.id = _id;
+    end &&
+delimiter ;
+
+# findProductById
+delimiter &&
+drop procedure if exists `findProductById` &&
+create procedure findProductById(in _id int)
+begin
+	select p.id, p.nameProduct, p.price,
+    p.quantity,
+    p.color,
+    p.description,
+    c.nameCategory
+    from Product as p
+    join category as c
+    on p.categoryId = c.id
+    where p.id = _id;
+    end &&
+delimiter ;
+call findProductById('2');
+
