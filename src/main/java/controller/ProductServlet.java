@@ -1,7 +1,10 @@
 package controller;
 
-import dao.ProductImp;
-import dao.UIProduct;
+import dao.categoryDAO.CategoryImp;
+import dao.categoryDAO.UICategory;
+import dao.productDAO.ProductImp;
+import dao.productDAO.UIProduct;
+import models.Category;
 import models.Product;
 
 import javax.servlet.ServletException;
@@ -16,6 +19,7 @@ import java.util.List;
 public class ProductServlet extends HttpServlet {
 
     private UIProduct imp = new ProductImp();
+    private UICategory impCategory = new CategoryImp();
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -59,10 +63,20 @@ public class ProductServlet extends HttpServlet {
         }
     }
 
-    private void saveProduct(HttpServletRequest req, HttpServletResponse resp) {
-        String idProduct = req.getParameter("id");
+    private void saveProduct(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        int idProduct = Integer.parseInt(req.getParameter("id"));
+        String nameProduct = req.getParameter("nameProduct");
+        long price = Long.parseLong(req.getParameter("price"));
+        int quantity = Integer.parseInt(req.getParameter("quantity"));
+        String color = req.getParameter("color");
+        String desc = req.getParameter("desc");
+        int categoryId = Integer.parseInt(req.getParameter("selectCategory"));
 
-
+        boolean valid = imp.updateProductById(idProduct, nameProduct, price, quantity,
+                color, desc, categoryId);
+        if(valid){
+            resp.sendRedirect("product");
+        }
     }
 
     private void showFormCreate(HttpServletRequest req, HttpServletResponse resp) {
@@ -71,7 +85,9 @@ public class ProductServlet extends HttpServlet {
     private void showFormEdit(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         int idProduct = Integer.parseInt(req.getParameter("id"));
         Product product = imp.findProductById(idProduct);
+        List<Category> categoryList = impCategory.findAllCategory();
         req.setAttribute("product", product);
+        req.setAttribute("categoryList",categoryList);
         req.getRequestDispatcher("edit.jsp").forward(req, resp);
     }
 

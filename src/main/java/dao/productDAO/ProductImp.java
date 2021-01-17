@@ -1,6 +1,7 @@
-package dao;
+package dao.productDAO;
 
 import com.mysql.cj.jdbc.CallableStatement;
+import dao.ConnectionDB;
 import models.Category;
 import models.Product;
 import models.Query;
@@ -73,7 +74,7 @@ public class ProductImp implements UIProduct {
         try {
             Connection connection = connectionDB.getConnection();
             CallableStatement callableStatement = (CallableStatement) connection.prepareCall(Query.FIND_PRODUCT_BY_ID);
-            callableStatement.setInt(1,id);
+            callableStatement.setInt(1, id);
             ResultSet resultSet = callableStatement.executeQuery();
 
             while (resultSet.next()) {
@@ -96,5 +97,32 @@ public class ProductImp implements UIProduct {
 
 
         return product;
+    }
+
+    @Override
+    public boolean updateProductById(int idProduct, String nameProduct, long price, int quantity,
+                                     String color, String desc, int categoryId) {
+        boolean result = false;
+        try {
+            Connection connection = connectionDB.getConnection();
+            CallableStatement callableStatement = (CallableStatement) connection.prepareCall(Query.UPDATE_PRODUCT_BY_ID);
+
+            callableStatement.setInt(1, idProduct);
+            callableStatement.setString(2, nameProduct);
+            callableStatement.setLong(3, price);
+            callableStatement.setInt(4, quantity);
+            callableStatement.setString(5, color);
+            callableStatement.setString(6, desc);
+            callableStatement.setInt(7, categoryId);
+
+            result = callableStatement.executeUpdate() > 0;
+
+        } catch (SQLException exception) {
+            exception.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        return result;
     }
 }
