@@ -12,6 +12,15 @@
     <title>Product</title>
   </head>
   <body>
+    <div align="center">
+      <form action="?action=create">
+        <input type="submit" value="+ Add new product">
+      </form>
+      <form method="post" action="?action=search">
+        <input type="text" placeholder="Enter your product" name="productTxt">
+        <input type="submit" value="Search">
+      </form>
+    </div>
     <table border="1" align="center">
       <thead>
         <tr>
@@ -34,11 +43,11 @@
             <td>${product.color}</td>
             <td>${product.category.nameCategory}</td>
             <td>
-              <a href="/product?action=edit&id=${product.idProduct}">
+              <a href="?action=edit&id=${product.idProduct}">
                 <input type="submit" value="edit">
               </a>
             </td>
-            <form method="post" action="/product?action=delete&id=${product.idProduct}">
+            <form method="post" action="?action=delete&id=${product.idProduct}">
               <td>
                 <input type="submit" value="delete">
               </td>

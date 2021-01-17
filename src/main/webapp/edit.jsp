@@ -26,7 +26,7 @@
         Description:<input type="text" value="${requestScope.product.des}" name="desc">
         <br>
         Category:<select name="selectCategory">
-        <c:forEach items="${requestScope.categoryList}" var="category">
+        <c:forEach items="${sessionScope.categoryList}" var="category">
             <option value="${category.idCategory}">${category.nameCategory}</option>
         </c:forEach>
         </select>

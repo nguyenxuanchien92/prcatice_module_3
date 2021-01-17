@@ -12,6 +12,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.List;
 
@@ -49,16 +50,22 @@ public class ProductServlet extends HttpServlet {
             case "edit":
                 saveProduct(req, resp);
                 break;
+            case "create":
+                insertProduct(req, resp);
+                break;
             default:
                 break;
         }
     }
 
+    private void insertProduct(HttpServletRequest req, HttpServletResponse resp) {
+
+    }
+
     private void deleteProduct(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         int productId = Integer.parseInt(req.getParameter("id"));
         boolean valid = imp.deleteProductById(productId);
-        if(valid){
-            System.out.println("delete success");
+        if (valid) {
             resp.sendRedirect("product");
         }
     }
@@ -74,12 +81,15 @@ public class ProductServlet extends HttpServlet {
 
         boolean valid = imp.updateProductById(idProduct, nameProduct, price, quantity,
                 color, desc, categoryId);
-        if(valid){
+        if (valid) {
             resp.sendRedirect("product");
         }
     }
 
-    private void showFormCreate(HttpServletRequest req, HttpServletResponse resp) {
+    private void showFormCreate(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+
+        req.getRequestDispatcher("create.jsp").forward(req, resp);
+
     }
 
     private void showFormEdit(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -87,7 +97,10 @@ public class ProductServlet extends HttpServlet {
         Product product = imp.findProductById(idProduct);
         List<Category> categoryList = impCategory.findAllCategory();
         req.setAttribute("product", product);
-        req.setAttribute("categoryList",categoryList);
+
+        HttpSession session = req.getSession();
+        session.setAttribute("categoryList", categoryList);
+
         req.getRequestDispatcher("edit.jsp").forward(req, resp);
     }
 
